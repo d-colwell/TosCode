@@ -1,0 +1,93 @@
+﻿<Window x:Class="TosCode.AssemblyScanner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TosCode.AssemblyScanner"
+        
+        xmlns:vm="clr-namespace:TosCode.AssemblyScanner.ViewModels"
+        mc:Ignorable="d"
+        Title="Assembly Scanner" Height="350" Width="525" Background="{DynamicResource WindowBackgroundBrush }">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Column="0" Margin="5" >
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <Label Grid.Column="0" Margin="0,5,10,5" VerticalAlignment="Center">Assembly File:</Label>
+                <Button Grid.Column="1" Padding="5" Click="Button_Click" >Select File</Button>
+            </StackPanel>
+            <TextBox DockPanel.Dock="Top" Name="assemblyFile" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,5,0,5" Text="{Binding AssemblyPath}"></TextBox>
+            <TreeView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Assemblies}" SelectedItemChanged="TreeView_SelectedItemChanged" >
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:AssemblyViewModel}" ItemsSource="{Binding Classes}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text=" [" Foreground="LightGray" />
+                            <TextBlock Text="{Binding Classes.Count}" Foreground="LightGray" />
+                            <TextBlock Text="]" Foreground="LightGray" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:ClassViewModel}" ItemsSource="{Binding Methods}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text=" [" Foreground="LightGray" />
+                            <TextBlock Text="{Binding Methods.Count}" Foreground="LightGray" />
+                            <TextBlock Text="]" Foreground="LightGray" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:MethodViewModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text=" [" Foreground="LightGray" />
+                            <TextBlock Text="{Binding Parameters.Count}" Foreground="LightGray" />
+                            <TextBlock Text="]" Foreground="LightGray" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </DockPanel>
+        <DockPanel Grid.Column="1" Margin="5" >
+            <Grid Margin="0,33,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label>Method Name:</Label>
+                <Label Grid.Row="1">Friendly Name:</Label>
+                <Label Grid.Row="2">Parameters:</Label>
+                <TextBlock Grid.Column ="1" Text="{Binding SelectedMethod.Name}" Foreground="White"></TextBlock>
+                <TextBox Grid.Row="1" Grid.Column ="1" Text="{Binding SelectedMethod.FriendlyName}"></TextBox>
+                <TextBox Grid.Row="1" Grid.Column ="1" Text="{Binding SelectedMethod.FriendlyName}"></TextBox>
+                <ListView Name="lstParameters"  Grid.Row="2" Grid.Column="1" Height="Auto" IsEnabled="False" ItemsSource="{Binding SelectedMethod.Parameters}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Height" Value="Auto" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ParameterViewModel}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}"></TextBlock>
+                                <TextBlock Text=" ["></TextBlock>
+                                <TextBlock Text="{Binding TypeName}"></TextBlock>
+                                <TextBlock Text="]"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+            </Grid>
+            
+        </DockPanel>
+    </Grid>
+</Window>
