@@ -8,15 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using TosCode.Connector.Models;
 
-namespace TosCode.AssemblyScanner.ViewModels
+namespace TosCode.Scanner.ViewModels
 {
     public class AssemblyViewModel : ViewModelBase
     {
         private readonly Assembly assembly;
         private ObservableCollection<ClassViewModel> _classes;
+        private string filePath;
+
         public AssemblyViewModel() { }
-        public AssemblyViewModel(Assembly assembly)
+        public AssemblyViewModel(string loadFromFilePath)
         {
+            Assembly assembly = Assembly.LoadFrom(loadFromFilePath);
+            this.filePath = loadFromFilePath;
             this.assembly = assembly;
             this.Classes = new ObservableCollection<ClassViewModel>();
             var classes = assembly.GetTypes().Where( t=>
@@ -31,6 +35,7 @@ namespace TosCode.AssemblyScanner.ViewModels
         }
 
         public string Name => assembly.FullName;
+        public string FilePath => this.filePath;
 
         public ObservableCollection<ClassViewModel> Classes
         {
@@ -48,8 +53,8 @@ namespace TosCode.AssemblyScanner.ViewModels
         {
             return new AssemblyModel
             {
-                Assembly = this.assembly,
-                Classes = Classes.Select(x => x.Model())
+                Classes = Classes.Select(x => x.Model()),
+                AssemblyFilePath = filePath
             };
         }
     }

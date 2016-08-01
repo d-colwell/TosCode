@@ -3,17 +3,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using TosCode.AssemblyScanner.ViewModels;
-using Tricentis.TCAPIObjects.Objects;
+using TosCode.Scanner.ViewModels;
 using System.Linq;
-namespace TosCode.Connector
+using TosCode.Connector.Models;
+using System.Collections.Generic;
+
+namespace TosCode.Scanner
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TosCode.Connector.Connector connector;
         public MainWindow()
         {
             InitializeComponent();
@@ -21,16 +22,31 @@ namespace TosCode.Connector
             DataContext = this;
         }
 
-        public MainWindow(TCFolder folder)
-            :base()
+        public MainWindow(IEnumerable<AssemblyModel> assemblies)
+            : this()
         {
-            this.ToscaFolder = folder;
-            this.IsInitialisedFromTosca = this.ToscaFolder != null;
-            connector = new Connector(this.ToscaFolder);
-            if (this.IsInitialisedFromTosca)
-                this.saveToTosca.Visibility = Visibility.Collapsed;
+            foreach (var assemblyModel in assemblies)
+            {
+                var assemblyViewModel = new AssemblyViewModel(assemblyModel.AssemblyFilePath);
+                foreach (var classVM in assemblyViewModel.Classes)
+                {
+                    var classM = assemblyModel.Classes.FirstOrDefault(x => x.ClassName == classVM.Name);
+                    if(classM != null)
+                    {
+                        foreach (var methodVM in classVM.Methods)
+                        {
+                            var methodM = classM.Methods.FirstOrDefault(mm => mm.MethodName == methodVM.Name);
+                            if(methodM != null)
+                            {
+                                methodVM.FriendlyName = methodM.FriendlyName; 
+                                methodVM.IsSelected = true;
+                            }
+                        }
+                    }
+                }
+                this.Assemblies.Add(assemblyViewModel);
+            }
         }
-
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -46,32 +62,10 @@ namespace TosCode.Connector
             }
             this.Assemblies.Clear();
             this.Assemblies.Add(GetAssembly());
-            foreach (var assembly in Assemblies)
-            {
-                if(this.IsInitialisedFromTosca)
-                {
-                    var matches = connector.MatchMethodModules(assembly.Model());
-                    foreach (var match in matches)
-                    {
-                        match.MethodModel.FriendlyName = match.XModule.Name;
-                        match.MethodModel.IsSelected = true;
-                    }
-                }
-            }
         }
 
 
         #region Dependency Properties
-        public TCFolder ToscaFolder
-        {
-            get { return (TCFolder)GetValue(ToscaFolderProperty); }
-            set { SetValue(ToscaFolderProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for ToscaFolder.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ToscaFolderProperty =
-            DependencyProperty.Register("ToscaFolder", typeof(TCFolder), typeof(MainWindow), new PropertyMetadata(null));
-
 
         public bool IsInitialisedFromTosca
         {
@@ -130,6 +124,7 @@ namespace TosCode.Connector
             set { SetValue(SelectedMethodProperty, value); }
         }
 
+
         // Using a DependencyProperty as the backing store for SelectedMethod.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedMethodProperty =
             DependencyProperty.Register("SelectedMethod", typeof(MethodViewModel), typeof(MainWindow), new PropertyMetadata(null));
@@ -148,8 +143,7 @@ namespace TosCode.Connector
             if (!string.IsNullOrEmpty(this.ErrorMessage))
                 return null;
 
-            Assembly assembly = System.Reflection.Assembly.LoadFrom(AssemblyPath);
-            return new AssemblyViewModel(assembly);
+            return new AssemblyViewModel(AssemblyPath);
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -161,3 +155,4 @@ namespace TosCode.Connector
         }
     }
 }
+

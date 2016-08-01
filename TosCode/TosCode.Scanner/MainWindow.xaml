@@ -1,13 +1,18 @@
-﻿<Window x:Class="TosCode.Connector.MainWindow"
+﻿<Window x:Class="TosCode.Scanner.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TosCode.Connector"
-        
-        xmlns:vm="clr-namespace:TosCode.AssemblyScanner.ViewModels"
+        xmlns:vm="clr-namespace:TosCode.Scanner.ViewModels"
         mc:Ignorable="d"
         Title="Assembly Scanner" Height="350" Width="525" Background="{DynamicResource WindowBackgroundBrush }">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -88,7 +93,7 @@
                 </ListView>
                 <Button Name="saveToTosca" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0" Padding="5">Save to Tosca</Button>
             </Grid>
-            
+
         </DockPanel>
     </Grid>
 </Window>

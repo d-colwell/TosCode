@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using TosCode.Connector.Models;
 
-namespace TosCode.AssemblyScanner.ViewModels
+namespace TosCode.Scanner.ViewModels
 {
     public class ClassViewModel : ViewModelBase
     {
@@ -21,7 +21,7 @@ namespace TosCode.AssemblyScanner.ViewModels
             );
             foreach (var method in mthds)
             {
-                this.Methods.Add(new MethodViewModel(method));
+                this.Methods.Add(new MethodViewModel(method, this.Model()));
             }
         }
 
@@ -44,7 +44,7 @@ namespace TosCode.AssemblyScanner.ViewModels
             return new ClassModel
             {
                 Methods = this.Methods.Select(x => x.Model()),
-                Type = this.cls
+                ClassName = this.cls.Name
             };
         }
 

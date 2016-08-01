@@ -2,16 +2,17 @@
 using System.Reflection;
 using TosCode.Connector.Models;
 
-namespace TosCode.AssemblyScanner.ViewModels
+namespace TosCode.Scanner.ViewModels
 {
     public class MethodViewModel : ViewModelBase
     {
         private MethodInfo method;
         public MethodViewModel() { }
-        public MethodViewModel(MethodInfo method)
+        public MethodViewModel(MethodInfo method, ClassModel parent)
         {
             this.method = method;
             this.Parameters = new ObservableCollection<ParameterViewModel>();
+            this.parent = parent;
             foreach (var parameter in method.GetParameters())
             {
                 Parameters.Add(new ParameterViewModel(parameter));
@@ -48,6 +49,7 @@ namespace TosCode.AssemblyScanner.ViewModels
         }
 
         private ObservableCollection<ParameterViewModel>  parameters;
+        private ClassModel parent;
 
         public ObservableCollection<ParameterViewModel> Parameters
         {
@@ -67,7 +69,8 @@ namespace TosCode.AssemblyScanner.ViewModels
             {
                 FriendlyName = this.friendlyName,
                 IsSelected = this.isSelected,
-                Method = this.method
+                MethodName = this.method.Name,
+                DeclaringType = this.parent
             };
         }
 
