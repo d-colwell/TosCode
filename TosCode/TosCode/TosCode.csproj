@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="CodeExecutor.cs" />
     <Compile Include="ExampleClass.cs" />
+    <Compile Include="InstanceManager.cs" />
     <Compile Include="ModuleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionConfig.cs" />

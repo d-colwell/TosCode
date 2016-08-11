@@ -122,7 +122,7 @@ namespace Tricentis.Automation.AutomationInstructions.TestActions
             //Check if it has a parameterless constructor
             if (!type.GetConstructors().Any(x => x.GetParameters().Length == 0))
                 throw new InvalidOperationException(string.Format("Unable to create the class {0} as it doesn't have a parameterless constructor", config.ClassName));
-            return Activator.CreateInstance(type);
+            return InstanceManager.Instance.GetInstance(type);
         }
 
     }
