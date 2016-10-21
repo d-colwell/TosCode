@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Tricentis.Automation.Creation.Attributes;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TosCode")]
+[assembly: AssemblyTitle("TosCode.Helpers")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TosCode")]
+[assembly: AssemblyProduct("TosCode.Helpers")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using Tricentis.Automation.Creation.Attributes;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e260521a-5d25-4f86-80bc-a7978ac4d5b1")]
+[assembly: Guid("2d8b7c0c-b88f-4069-8d8e-ec51598cdc07")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,4 +34,3 @@ using Tricentis.Automation.Creation.Attributes;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: Tricentis.Automation.Creation.Attributes.EngineId("TosCode")]

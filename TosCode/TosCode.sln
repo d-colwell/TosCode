@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode", "TosCode\TosCode.csproj", "{E260521A-5D25-4F86-80BC-A7978AC4D5B1}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.Connector", "TosCode.Connector\TosCode.Connector.csproj", "{BD9E656F-E551-45DB-9678-27386FA1EC84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.Scanner", "TosCode.Scanner\TosCode.Scanner.csproj", "{8503FFC5-1BB0-407F-95E9-9C7AC548821E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.Helpers", "TosCode.Helpers\TosCode.Helpers.csproj", "{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8503FFC5-1BB0-407F-95E9-9C7AC548821E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8503FFC5-1BB0-407F-95E9-9C7AC548821E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8503FFC5-1BB0-407F-95E9-9C7AC548821E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,13 +14,14 @@ using System.Reflection;
 using TosCode;
 using System.ComponentModel;
 using Tricentis.Automation.AutomationInstructions.Dynamic.Values;
+using TosCode.Helpers;
 
 namespace Tricentis.Automation.AutomationInstructions.TestActions
 {
     [SpecialExecutionTaskName("Execute")]
     public class CodeExecutor : SpecialExecutionTask
     {
-        public CodeExecutor(Validator validator) : base(validator)
+        public CodeExecutor(Creation.Validator validator) : base(validator)
         {
         }
 
@@ -30,11 +31,11 @@ namespace Tricentis.Automation.AutomationInstructions.TestActions
             var module = action.TCItem.GetModule();
             XModule xMod = module as XModule;
             var xParams = xMod.GetXParams();
-            ModuleType moduleType;
-            if (!Enum.TryParse(xParams.Single(x => x.Name.ToLower() == "type").Value, out moduleType))
-            {
-                throw new InvalidOperationException("Invalid value in 'Type' Technical Parameter");
-            }
+            ModuleType moduleType = ModuleType.Method;
+            //if (!Enum.TryParse(xParams.Single(x => x.Name.ToLower() == "type").Value, out moduleType))
+            //{
+            //    throw new InvalidOperationException("Invalid value in 'Type' Technical Parameter");
+            //}
 
             ReflectionConfig config = new ReflectionConfig
             {
@@ -64,39 +65,111 @@ namespace Tricentis.Automation.AutomationInstructions.TestActions
             Type type = classObject.GetType();
             //Check for a method with the same name, number of parameters, and parameter names match the Technical ID[Name] value of the attached module
             IEnumerable<MethodInfo> methods = type.GetMethods()
-                .Where(x => x.GetParameters().Count() == parameters.Count 
-                && x.Name == config.MethodName 
-                && x.GetParameters().All(p => parameters.Any(xp => xp.XParameters.TechnicalIdParameters.Single(tp => tp.Name == "Name").UnparsedValue == p.Name)));
-
+                .Where(x => x.GetParameters().Count() == parameters.Where(p=>!IsResultParameter(p)).Count()
+                && x.Name == config.MethodName
+                && x.GetParameters().All(p => parameters.Any(xp => GetParameterCodeName(xp) == p.Name)));
+            MethodInfo methodInfo = null;
             if (!methods.Any())
                 throw new InvalidOperationException($"No method found with name {config.MethodName} and parameters matching the input parameters");
-            if(methods.Count() > 1)
-                throw new InvalidOperationException($"More than one method found with name {config.MethodName}, which has the same parameter names. Type overload on method footprints is currently not supported.");
-            MethodInfo methodInfo = methods.First();
+            if (methods.Count() > 1)
+            {
+                if (action.Children.Any())
+                {
+                    if (methods.Where(x => x.ReturnType != typeof(void)).Count() == 1)
+                        methodInfo = methods.First(x => x.ReturnType != typeof(void));
+                }
+            }
+            else
+                methodInfo = methods.First();
+            if(methodInfo == null)
+                throw new InvalidOperationException($"Unable to locate method {config.MethodName}, with the correct signature. Type overload on method footprints is currently not supported.");
+
             ParameterInfo[] methodParameters = methodInfo.GetParameters();
-
-
 
             List<object> instanceParameters = new List<object>();
             foreach (var parameter in methodParameters)
             {
-                IParameter testValue = parameters.First(p => p.XParameters.TechnicalIdParameters.Single(tp => tp.Name == "Name").UnparsedValue == parameter.Name);
-                var converter = TypeDescriptor.GetConverter(parameter.ParameterType);
-                InputValue val = testValue.Value as InputValue;
-                
-                object result = converter.ConvertFrom(val.Value);
+                IParameter testParameter = parameters.FirstOrDefault(p => GetParameterCodeName(p) == parameter.Name);
+                if (testParameter == null)
+                    throw new Exception($"Unable to find Test value for method parameter {parameter.Name}");
+                object result = GetObjectFromParameter(testParameter, parameter.ParameterType);
                 instanceParameters.Add(result);
             }
             try
             {
                 object methodResult = methodInfo.Invoke(classObject, instanceParameters.ToArray());
-                r = new PassedActionResult("Method executed successfuly");
+                var resultAction = parameters.FirstOrDefault(x => IsResultParameter(x));
+                if (resultAction == null)
+                    return new PassedActionResult($"Executed method {methodInfo.Name} successfuly. No result expected.");
+                else
+                {
+                    if (!resultAction.Parameters.Any())
+                    {
+                        HandleActualValue(action, resultAction, methodResult);
+                    }
+                    else
+                    {
+                        var resultType = methodResult.GetType();
+                        foreach (var property in resultType.GetProperties().Where(x => x.SetMethod.IsPublic)) 
+                        {
+                            var childParameter = resultAction.Parameters.FirstOrDefault(x => GetParameterCodeName(x) == property.Name);
+                            if (childParameter != null)
+                                HandleActualValue(action, childParameter, property.GetValue(methodResult));
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
-                r = new UnknownFailedActionResult(e.Message);
+                string message = e.Message;
+                if (e.InnerException != null)
+                    message = e.InnerException.Message;
+                r = new UnknownFailedActionResult(message);
+                return r;
             }
-            return r;
+            return new PassedActionResult();
+        }
+
+        private object GetObjectFromParameter(IParameter parameter, Type type)
+        {
+            if (type.IsSimple())
+            {
+                if (parameter.Parameters.Count() > 0)
+                    throw new Exception($"Unable to create simple type {type.Name} with children attributes for parameter {parameter.Name}");
+                var converter = TypeDescriptor.GetConverter(type);
+                InputValue val = parameter.Value as InputValue;
+                object result = converter.ConvertFrom(val.Value);
+                return result;
+            }
+            var parentParameter = Activator.CreateInstance(type);
+            var properties = type.GetProperties().Where(x => x.SetMethod.IsPublic);
+            foreach (var property in properties)
+            {
+                var matchingParameter = parameter.Parameters.FirstOrDefault(x => GetParameterCodeName(x) == property.Name);
+                if (matchingParameter == null)
+                    continue;
+                object propertyValue = GetObjectFromParameter(matchingParameter, property.PropertyType);
+                property.SetValue(parentParameter, propertyValue);
+            }
+            return parentParameter;
+        }
+
+        private string GetParameterCodeName(IParameter parameter)
+        {
+            var configParam = parameter.XParameters.ConfigurationParameters.FirstOrDefault(x => x.Name == "Name");
+            if (configParam == null)
+                return null;
+            return configParam.UnparsedValue;
+        }
+        private bool IsResultParameter(IParameter child)
+        {
+            var configParam = child.XParameters.ConfigurationParameters.FirstOrDefault(x => x.Name == "Result");
+            if (configParam == null)
+                return false;
+            bool result = false;
+            if (!bool.TryParse(configParam.UnparsedValue, out result))
+                return false;
+            return result;
         }
 
         private ActionResult ExecuteClass(SpecialExecutionTaskTestAction action, object classObject)
@@ -123,6 +196,16 @@ namespace Tricentis.Automation.AutomationInstructions.TestActions
             if (!type.GetConstructors().Any(x => x.GetParameters().Length == 0))
                 throw new InvalidOperationException(string.Format("Unable to create the class {0} as it doesn't have a parameterless constructor", config.ClassName));
             return InstanceManager.Instance.GetInstance(type);
+        }
+
+        private MethodInfo FindMethod(Type type, string name, IEnumerable<IParameter> parameters)
+        {
+            var similarMethods = type.GetMethods().Where(m => m.Name == name);
+            if (similarMethods.Count() == 1)
+                return similarMethods.First();
+            var inputParameters = parameters.Where(x => !IsResultParameter(x));
+            var resultParameter = parameters.FirstOrDefault(x => IsResultParameter(x));
+            throw new NotImplementedException();
         }
 
     }

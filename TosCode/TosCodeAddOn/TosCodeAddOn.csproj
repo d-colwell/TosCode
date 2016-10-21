@@ -9,14 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TosCodeAddOn</RootNamespace>
     <AssemblyName>TosCodeAddOn</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(TRICENTIS_HOME)\ToscaCommander\Addins</OutputPath>
+    <OutputPath>..\..\..\..\..\..\..\Program Files %28x86%29\TRICENTIS\Tosca Testsuite\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,19 +39,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="TCAddOn">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\ToscaCommander\Addins\TCAddOn.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\TCAddOn.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="TCAPIObjects">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\ToscaCommander\TCAPIObjects.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\TCAPIObjects.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase">
       <Private>True</Private>
@@ -78,6 +77,10 @@
     <ProjectReference Include="..\TosCode.Connector\TosCode.Connector.csproj">
       <Project>{bd9e656f-e551-45db-9678-27386fa1ec84}</Project>
       <Name>TosCode.Connector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TosCode.Helpers\TosCode.Helpers.csproj">
+      <Project>{2d8b7c0c-b88f-4069-8d8e-ec51598cdc07}</Project>
+      <Name>TosCode.Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\TosCode.Scanner\TosCode.Scanner.csproj">
       <Project>{8503ffc5-1bb0-407f-95e9-9c7ac548821e}</Project>

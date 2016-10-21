@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddOnName" xml:space="preserve">
-    <value>Tosca -&gt; Code Integration</value>
+    <value>Scan Application...</value>
   </data>
   <data name="SyncAssemblyTaskName" xml:space="preserve">
-    <value>Sync with assembly file</value>
+    <value>Assembly File</value>
   </data>
 </root>

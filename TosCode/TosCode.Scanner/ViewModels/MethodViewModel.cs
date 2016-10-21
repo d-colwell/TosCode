@@ -47,6 +47,7 @@ namespace TosCode.Scanner.ViewModels
                 base.NotifyPropertyChanged(nameof(FriendlyName));
             }
         }
+        public System.Type ReturnType => method.ReturnType;
 
         private ObservableCollection<ParameterViewModel>  parameters;
         private ClassModel parent;

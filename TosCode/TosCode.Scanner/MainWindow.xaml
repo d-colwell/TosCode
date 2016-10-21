@@ -91,7 +91,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Button Name="saveToTosca" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0" Padding="5">Save to Tosca</Button>
+                <Button Name="saveToTosca" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0" Padding="5" Click="saveToTosca_Click">Save to Tosca</Button>
             </Grid>
 
         </DockPanel>

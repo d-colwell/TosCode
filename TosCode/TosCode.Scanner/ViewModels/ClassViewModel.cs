@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using TosCode.Connector.Models;
+using TosCode.Helpers;
 
 namespace TosCode.Scanner.ViewModels
 {
@@ -16,7 +17,7 @@ namespace TosCode.Scanner.ViewModels
             this.cls = cls;
             this.Methods = new ObservableCollection<MethodViewModel>();
             var mthds = cls.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).Where(m =>
-                m.GetParameters().Select(p => p.ParameterType).All(p => p.IsPrimitive || p == typeof(string) || p == typeof(double) || p == typeof(Decimal) || p == typeof(DateTime))
+                m.GetParameters().All(IsParameterAllowed)
                 && !m.IsSpecialName
             );
             foreach (var method in mthds)
@@ -26,7 +27,7 @@ namespace TosCode.Scanner.ViewModels
         }
 
         public string Name => cls.Name;
-
+        public string FullName => cls.FullName;
         public ObservableCollection<MethodViewModel> Methods
         {
             get { return methods; }
@@ -46,6 +47,18 @@ namespace TosCode.Scanner.ViewModels
                 Methods = this.Methods.Select(x => x.Model()),
                 ClassName = this.cls.Name
             };
+        }
+
+        public bool IsParameterAllowed(ParameterInfo param)
+        {
+            var paramType = param.ParameterType;
+            if (paramType.IsSimple())
+                return true;
+            if (paramType.IsInterface)
+                return false;
+            if (paramType.IsClass && !paramType.GetConstructors().Any(x => x.GetParameters().Count() == 0))
+                return false;
+            return true;
         }
 
     }

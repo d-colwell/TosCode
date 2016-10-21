@@ -153,6 +153,11 @@ namespace TosCode.Scanner
             if (e.NewValue is MethodViewModel)
                 SelectedMethod = e.NewValue as MethodViewModel;
         }
+
+        private void saveToTosca_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
 
