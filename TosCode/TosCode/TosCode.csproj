@@ -57,11 +57,11 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Tricentis.Automation.Configuration.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Tricentis.Automation.Creation, Version=10.0.0.22589, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Tricentis.Automation.Interaction">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Tricentis.Automation.Interaction.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Tricentis.AutomationBase, Version=10.0.0.6680, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="XDefinitions">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\XDefinitions.dll</HintPath>
       <Private>False</Private>
@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeExecutor.cs" />
-    <Compile Include="ExampleClass.cs" />
     <Compile Include="InstanceManager.cs" />
     <Compile Include="ModuleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
