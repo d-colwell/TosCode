@@ -19,7 +19,7 @@ namespace TosCodeAddOn
 
         public IEnumerable<MethodModuleMatch> MatchMethodModules(AssemblyModel assembly)
         {
-            IEnumerable<XModule> methodModules = folder.Search("=>SUBPARTS:XModule=>SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]=>OwningObject").Cast<XModule>();
+            IEnumerable<XModule> methodModules = folder.Search("=>SUBPARTS:XModule->SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]->OwningObject").Cast<XModule>();
             var matches = from mm in methodModules
                           join m in assembly.Classes.SelectMany(c => c.Methods)
                              on new { c = mm.XParams.Single(x => x.Name.ToLower() == "classname").Value, m = mm.XParams.Single(x => x.Name.ToLower() == "methodname").Value } equals new { c = m.DeclaringType.ClassName, m = m.MethodName }

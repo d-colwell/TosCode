@@ -61,7 +61,7 @@ namespace TosCodeAddOn.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scan Application....
+        ///   Looks up a localized string similar to Scan Application.
         /// </summary>
         internal static string AddOnName {
             get {
@@ -70,7 +70,7 @@ namespace TosCodeAddOn.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assembly File.
+        ///   Looks up a localized string similar to Code Library.
         /// </summary>
         internal static string SyncAssemblyTaskName {
             get {
