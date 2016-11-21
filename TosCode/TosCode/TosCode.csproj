@@ -53,13 +53,11 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\TCAPIObjects.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Tricentis.Automation.Creation, Version=10.0.0.22589, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Tricentis.Automation.Creation.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Tricentis.Automation.Interaction">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Tricentis.Automation.Interaction.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Tricentis.AutomationBase, Version=10.0.0.6680, Culture=neutral, PublicKeyToken=null">
       <Private>False</Private>
     </Reference>
     <Reference Include="XDefinitions">
