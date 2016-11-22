@@ -7,30 +7,29 @@ using System.Threading.Tasks;
 using TosCode.Helpers;
 using TosCode.Scanner;
 using TosCode.Scanner.ViewModels;
-using Tricentis.TCAddOns;
-using Tricentis.TCAPIObjects.Objects;
+using Tricentis.TCAddIns.XDefinitions.Modules;
+using Tricentis.TCAddIns.XDefinitions.Testcases;
+using Tricentis.TCCore.BusinessObjects.Folders;
+using Tricentis.TCCore.BusinessObjects.Modules;
+using Tricentis.TCCore.Persistency;
+using Tricentis.TCCore.Persistency.Tasks;
 
 namespace TosCodeAddOn.Tasks
 {
-    public class SyncAssemblyTask : TCAddOnTask
+    public class SyncAssemblyTask : Tricentis.TCCore.Persistency.Task
     {
         public const int MAX_DEPTH = 7;
-        public override Type ApplicableType => typeof(TCFolder);
         public override string Name => Resources.Text.SyncAssemblyTaskName;
-
-
-        public override bool IsTaskPossible(TCObject obj)
+        public override TaskCategory Category
         {
-            TCFolder fldr = (TCFolder)obj;
-            return fldr.PossibleContent.Contains("Module");
+            get
+            {
+                return new TaskCategory(Resources.Text.AddOnName);
+            }
         }
-
-
-        public override TCObject Execute(TCObject objectToExecuteOn, TCAddOnTaskContext taskContext)
+        public override object Execute(PersistableObject obj, ITaskContext context, TaskObjectContext objectContext)
         {
-
-
-            TCFolder folder = objectToExecuteOn as TCFolder;
+            TCFolder folder = obj as TCFolder;
             //var window = new MainWindow();
             //window.ShowDialog();
 
@@ -77,7 +76,8 @@ namespace TosCodeAddOn.Tasks
         #region Helpers
         private XModule CreateModule(AssemblyViewModel assembly, ClassViewModel cls, MethodViewModel method, TCFolder parent)
         {
-            var module = parent.CreateXModule();
+            var module = XModule.Create();
+            module.ParentFolder.Set(parent);
             module.Name = method.FriendlyName ?? method.Name;
             var assemblyParam = module.CreateTechnicalIDParam();
             var classNameParam = module.CreateTechnicalIDParam();
@@ -177,13 +177,13 @@ namespace TosCodeAddOn.Tasks
 
         private TCFolder GetOrCreateChildFolder(TCFolder parent, string name)
         {
-            var folder = parent.Search($"=>SUBPARTS:TCFolder[Name==\"{name}\"]").Where(f => f.OwningObject == parent).FirstOrDefault() as TCFolder;
-            if (folder == null)
+            TCFolder child = parent.AllOwnedSubItems.FirstOrDefault(x => x.Name == name) as TCFolder;
+            if(child == null)
             {
-                folder = parent.CreateFolder();
-                folder.Name = name;
+                child = TCFolder.Create(parent.ContentPolicy);
+                child.ParentFolder.Set(parent);
             }
-            return folder;
+            return parent.GetOrCreateSubFolder(name, parent.ContentPolicy);
         }
         public bool IsNumericType(Type type)
         {
@@ -204,6 +204,11 @@ namespace TosCodeAddOn.Tasks
                 default:
                     return false;
             }
+        }
+
+        public override object Execute(PersistableObject obj, ITaskContext context)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
