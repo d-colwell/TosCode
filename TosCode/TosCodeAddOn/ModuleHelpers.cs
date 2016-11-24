@@ -13,7 +13,7 @@ namespace TosCodeAddOn
         {
             var xp = XParam.Create();
             xp.ParamType = XParam.ParamTypeE.TechnicalID;
-            module.XParams.Add(xp);
+            module.Properties.Add(xp);
             return xp;
         }
 
@@ -21,7 +21,7 @@ namespace TosCodeAddOn
         {
             var xp = XParam.Create();
             xp.ParamType = XParam.ParamTypeE.TechnicalID;
-            moduleAttribute.XParams.Add(xp);
+            moduleAttribute.Properties.Add(xp);
             return xp;
         }
 
@@ -29,14 +29,14 @@ namespace TosCodeAddOn
         {
             var xp = XParam.Create();
             xp.ParamType = XParam.ParamTypeE.Configuration;
-            module.XParams.Add(xp);
+            module.Properties.Add(xp);
             return xp;
         }
         public static XParam CreateConfigurationParam(this XModuleAttribute moduleAttribute)
         {
             var xp = XParam.Create();
             xp.ParamType = XParam.ParamTypeE.Configuration;
-            moduleAttribute.XParams.Add(xp);
+            moduleAttribute.Properties.Add(xp);
             return xp;
         }
         public static XModuleAttribute CreateModuleAttribute(this XModule module)

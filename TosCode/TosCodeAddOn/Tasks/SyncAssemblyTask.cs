@@ -16,10 +16,11 @@ using Tricentis.TCCore.Persistency.Tasks;
 
 namespace TosCodeAddOn.Tasks
 {
-    public class SyncAssemblyTask : Tricentis.TCCore.Persistency.Task
+    public class SyncAssemblyTask : ThreadTask
     {
         public const int MAX_DEPTH = 7;
         public override string Name => Resources.Text.SyncAssemblyTaskName;
+        public volatile string message = string.Empty;
         public override TaskCategory Category
         {
             get
@@ -27,9 +28,13 @@ namespace TosCodeAddOn.Tasks
                 return new TaskCategory(Resources.Text.AddOnName);
             }
         }
-        public override object Execute(PersistableObject obj, ITaskContext context, TaskObjectContext objectContext)
+        public override object Execute(List<PersistableObject> objs, ITaskContext context)
         {
-            TCFolder folder = obj as TCFolder;
+            return base.Execute(objs, context);
+        }
+        protected override void RunInMainThread()
+        {
+            TCFolder folder = this.Object as TCFolder;
             //var window = new MainWindow();
             //window.ShowDialog();
 
@@ -38,8 +43,13 @@ namespace TosCodeAddOn.Tasks
             t.SetApartmentState(ApartmentState.STA);
             t.Start(folder);
             t.Join();
-            return folder;
         }
+
+        protected override void RunInObserverThread()
+        {
+            TaskContext.ShowStatusInfo(message);
+        }
+
 
         private void ThreadStart(object target)
         {
@@ -177,12 +187,12 @@ namespace TosCodeAddOn.Tasks
 
         private TCFolder GetOrCreateChildFolder(TCFolder parent, string name)
         {
-            TCFolder child = parent.AllOwnedSubItems.FirstOrDefault(x => x.Name == name) as TCFolder;
-            if(child == null)
-            {
-                child = TCFolder.Create(parent.ContentPolicy);
-                child.ParentFolder.Set(parent);
-            }
+            //TCFolder child = parent.AllOwnedSubItems.FirstOrDefault(x => x.Name == name) as TCFolder;
+            //if(child == null)
+            //{
+            //    child = TCFolder.Create(parent.ContentPolicy);
+            //    child.ParentFolder.Set(parent);
+            //}
             return parent.GetOrCreateSubFolder(name, parent.ContentPolicy);
         }
         public bool IsNumericType(Type type)
@@ -206,10 +216,6 @@ namespace TosCodeAddOn.Tasks
             }
         }
 
-        public override object Execute(PersistableObject obj, ITaskContext context)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
     }
 }

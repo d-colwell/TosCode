@@ -9,7 +9,7 @@ namespace TosCodeAddOn
 {
     public class TosCodeAddOn : TCAddIn
     {
-        public override string UniqueName => "TosCodeAddOn";
+        public override string UniqueName => "TosCodeAddIn";
         public override string DisplayedName => Resources.Text.AddOnName;
 
     }

@@ -20,20 +20,18 @@ namespace TosCodeAddOn
 
         public IEnumerable<MethodModuleMatch> MatchMethodModules(AssemblyModel assembly)
         {
-            yield break;
+            IEnumerable<XModule> methodModules = folder.SearchByTQL("=>SUBPARTS:XModule->SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]->OwningObject").Cast<XModule>();
+            var matches = from mm in methodModules
+                          join m in assembly.Classes.SelectMany(c => c.Methods)
+                             on new { c = mm.XParams.Single(x => x.Name.ToLower() == "classname").Value, m = mm.XParams.Single(x => x.Name.ToLower() == "methodname").Value } equals new { c = m.DeclaringType.ClassName, m = m.MethodName }
+                          select new MethodModuleMatch { XModule = mm, MethodModel = m };
 
-            //IEnumerable<XModule> methodModules = folder.SearchByTQL("=>SUBPARTS:XModule->SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]->OwningObject").Cast<XModule>();
-            //var matches = from mm in methodModules
-            //              join m in assembly.Classes.SelectMany(c => c.Methods)
-            //                 on new { c = mm.XParams.Single(x => x.Name.ToLower() == "classname").Value, m = mm.XParams.Single(x => x.Name.ToLower() == "methodname").Value } equals new { c = m.DeclaringType.ClassName, m = m.MethodName }
-            //              select new MethodModuleMatch { XModule = mm, MethodModel = m };
-
-            //return matches;
+            return matches;
         }
 
         public IEnumerable<AssemblyModel> GenerateAssemblyModels()
         {
-            IEnumerable<XModule> methodModules = new List<XModule>();// folder.SearchByTQL("=>SUBPARTS:XModule=>SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]=>OwningObject").Cast<XModule>();
+            IEnumerable<XModule> methodModules = folder.SearchByTQL("=>SUBPARTS:XModule=>SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]=>OwningObject").Cast<XModule>();
             var assemblies = methodModules.GroupBy(am => am.XParams.Single(xp => xp.Name.ToLower() == "libraryfile").Value)
                 .Select(ag => new AssemblyModel
                 {
