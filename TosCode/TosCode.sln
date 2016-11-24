@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.Scanner", "TosCode.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.Helpers", "TosCode.Helpers\TosCode.Helpers.csproj", "{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TosCode.JavaConnector", "TosCode.JavaConnector\TosCode.JavaConnector.csproj", "{CE1BDF33-978A-4484-8BB5-ACA34CE4D041}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D8B7C0C-B88F-4069-8D8E-EC51598CDC07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1BDF33-978A-4484-8BB5-ACA34CE4D041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1BDF33-978A-4484-8BB5-ACA34CE4D041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1BDF33-978A-4484-8BB5-ACA34CE4D041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1BDF33-978A-4484-8BB5-ACA34CE4D041}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

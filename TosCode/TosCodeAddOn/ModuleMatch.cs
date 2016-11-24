@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TosCode.Connector.Models;
-using Tricentis.TCAPIObjects.Objects;
+using Tricentis.TCAddIns.XDefinitions.Modules;
 
 namespace TosCodeAddOn
 {

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TosCode.Connector.Models;
-using Tricentis.TCAPIObjects.Objects;
+using Tricentis.TCAddIns.XDefinitions.Modules;
+using Tricentis.TCCore.BusinessObjects.Folders;
 
 namespace TosCodeAddOn
 {
@@ -19,7 +20,7 @@ namespace TosCodeAddOn
 
         public IEnumerable<MethodModuleMatch> MatchMethodModules(AssemblyModel assembly)
         {
-            IEnumerable<XModule> methodModules = folder.Search("=>SUBPARTS:XModule->SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]->OwningObject").Cast<XModule>();
+            IEnumerable<XModule> methodModules = folder.SearchByTQL("=>SUBPARTS:XModule->SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]->OwningObject").Cast<XModule>();
             var matches = from mm in methodModules
                           join m in assembly.Classes.SelectMany(c => c.Methods)
                              on new { c = mm.XParams.Single(x => x.Name.ToLower() == "classname").Value, m = mm.XParams.Single(x => x.Name.ToLower() == "methodname").Value } equals new { c = m.DeclaringType.ClassName, m = m.MethodName }
@@ -30,7 +31,7 @@ namespace TosCodeAddOn
 
         public IEnumerable<AssemblyModel> GenerateAssemblyModels()
         {
-            IEnumerable<XModule> methodModules = folder.Search("=>SUBPARTS:XModule=>SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]=>OwningObject").Cast<XModule>();
+            IEnumerable<XModule> methodModules = folder.SearchByTQL("=>SUBPARTS:XModule=>SUBPARTS:XParam[Name==\"Engine\" AND Value==\"TosCode\"]=>OwningObject").Cast<XModule>();
             var assemblies = methodModules.GroupBy(am => am.XParams.Single(xp => xp.Name.ToLower() == "libraryfile").Value)
                 .Select(ag => new AssemblyModel
                 {

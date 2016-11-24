@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tricentis.TCAddOns;
+using Tricentis.TCCore.Persistency.AddInManager;
 
 namespace TosCodeAddOn
 {
-    public class TosCodeAddOn : TCAddOn
+    public class TosCodeAddOn : TCAddIn
     {
-        public override string UniqueName => "TosCodeAddOn";
+        public override string UniqueName => "TosCodeAddIn";
         public override string DisplayedName => Resources.Text.AddOnName;
 
     }

@@ -7,30 +7,34 @@ using System.Threading.Tasks;
 using TosCode.Helpers;
 using TosCode.Scanner;
 using TosCode.Scanner.ViewModels;
-using Tricentis.TCAddOns;
-using Tricentis.TCAPIObjects.Objects;
+using Tricentis.TCAddIns.XDefinitions.Modules;
+using Tricentis.TCAddIns.XDefinitions.Testcases;
+using Tricentis.TCCore.BusinessObjects.Folders;
+using Tricentis.TCCore.BusinessObjects.Modules;
+using Tricentis.TCCore.Persistency;
+using Tricentis.TCCore.Persistency.Tasks;
 
 namespace TosCodeAddOn.Tasks
 {
-    public class SyncAssemblyTask : TCAddOnTask
+    public class SyncAssemblyTask : ThreadTask
     {
         public const int MAX_DEPTH = 7;
-        public override Type ApplicableType => typeof(TCFolder);
         public override string Name => Resources.Text.SyncAssemblyTaskName;
-
-
-        public override bool IsTaskPossible(TCObject obj)
+        public volatile string message = string.Empty;
+        public override TaskCategory Category
         {
-            TCFolder fldr = (TCFolder)obj;
-            return fldr.PossibleContent.Contains("Module");
+            get
+            {
+                return new TaskCategory(Resources.Text.AddOnName);
+            }
         }
-
-
-        public override TCObject Execute(TCObject objectToExecuteOn, TCAddOnTaskContext taskContext)
+        public override object Execute(List<PersistableObject> objs, ITaskContext context)
         {
-
-
-            TCFolder folder = objectToExecuteOn as TCFolder;
+            return base.Execute(objs, context);
+        }
+        protected override void RunInMainThread()
+        {
+            TCFolder folder = this.Object as TCFolder;
             //var window = new MainWindow();
             //window.ShowDialog();
 
@@ -39,8 +43,13 @@ namespace TosCodeAddOn.Tasks
             t.SetApartmentState(ApartmentState.STA);
             t.Start(folder);
             t.Join();
-            return folder;
         }
+
+        protected override void RunInObserverThread()
+        {
+            TaskContext.ShowStatusInfo(message);
+        }
+
 
         private void ThreadStart(object target)
         {
@@ -77,7 +86,8 @@ namespace TosCodeAddOn.Tasks
         #region Helpers
         private XModule CreateModule(AssemblyViewModel assembly, ClassViewModel cls, MethodViewModel method, TCFolder parent)
         {
-            var module = parent.CreateXModule();
+            var module = XModule.Create();
+            module.ParentFolder.Set(parent);
             module.Name = method.FriendlyName ?? method.Name;
             var assemblyParam = module.CreateTechnicalIDParam();
             var classNameParam = module.CreateTechnicalIDParam();
@@ -177,13 +187,13 @@ namespace TosCodeAddOn.Tasks
 
         private TCFolder GetOrCreateChildFolder(TCFolder parent, string name)
         {
-            var folder = parent.Search($"=>SUBPARTS:TCFolder[Name==\"{name}\"]").Where(f => f.OwningObject == parent).FirstOrDefault() as TCFolder;
-            if (folder == null)
-            {
-                folder = parent.CreateFolder();
-                folder.Name = name;
-            }
-            return folder;
+            //TCFolder child = parent.AllOwnedSubItems.FirstOrDefault(x => x.Name == name) as TCFolder;
+            //if(child == null)
+            //{
+            //    child = TCFolder.Create(parent.ContentPolicy);
+            //    child.ParentFolder.Set(parent);
+            //}
+            return parent.GetOrCreateSubFolder(name, parent.ContentPolicy);
         }
         public bool IsNumericType(Type type)
         {
@@ -205,6 +215,7 @@ namespace TosCodeAddOn.Tasks
                     return false;
             }
         }
+
         #endregion
     }
 }
