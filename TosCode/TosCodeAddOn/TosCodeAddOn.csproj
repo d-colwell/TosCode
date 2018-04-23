@@ -31,7 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Base, Version=10.0.0.25941, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Base">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Base.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusinessObjects, Version=10.0.0.25973, Culture=neutral, processorArchitecture=MSIL">
@@ -56,6 +57,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tricentis.AutomationBase">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\TRICENTIS\Tosca Testsuite\Tricentis.AutomationBase.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase">
       <Private>True</Private>
     </Reference>
@@ -98,6 +102,9 @@
       <Project>{8503ffc5-1bb0-407f-95e9-9c7ac548821e}</Project>
       <Name>TosCode.Scanner</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
